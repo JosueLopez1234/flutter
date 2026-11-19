@@ -56,3 +56,16 @@ DELETE /tasks/:id eliminar tarea
 
 La API concreta se elegirá después. Estas rutas son requisitos, no
 direcciones de un servidor ya conectado.
+
+## API de tareas
+
+- URL exacta: `https://jsonplaceholder.typicode.com/todos?userId=2`
+- Método: GET
+- Parámetro `userId`: filtra las tareas de un usuario (valor elegido: 2).
+- Campos que llegan de la API: `userId`, `id`, `title` y `completed`
+  (en el modelo `completed` se guarda como `isCompleted`).
+- Valores que TaskFlow completa por defecto: `description` ("Sin descripción (API)")
+  y `priority` ("Sin prioridad (A
+  PI)"), porque la API no los entrega.
+- Marcar una tarea como completada o pendiente es un cambio local en memoria:
+  JSONPlaceholder no guarda cambios y, al reiniciar la app, vuelve al valor remoto.
