@@ -20,4 +20,40 @@ class RemoteTaskRepository implements TaskRepository {
     if (index == -1) return;
     _tasks[index] = task;
   }
+
+  @override
+  Future<Task> createTask(
+    String title,
+    String description,
+    String priority,
+  ) async {
+    final response = await _apiService.createTask(title);
+
+    // JSONPlaceholder siempre responde id 201: evitamos ids repetidos.
+    final maxId = _tasks.fold<int>(0, (m, t) => t.id > m ? t.id : m);
+    final newId = response.id > maxId ? response.id : maxId + 1;
+
+    final task = Task(
+      id: newId,
+      title: title,
+      description: description,
+      priority: priority,
+      isCompleted: false,
+      userId: response.userId,
+    );
+    _tasks = [..._tasks, task];
+    return task;
+  }
+
+  @override
+  Future<void> updateTask(Task task) async {
+    await _apiService.updateTask(task);
+    save(task);
+  }
+
+  @override
+  Future<void> deleteTask(int id) async {
+    await _apiService.deleteTask(id);
+    _tasks = _tasks.where((task) => task.id != id).toList();
+  }
 }

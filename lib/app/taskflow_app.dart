@@ -8,14 +8,8 @@ import '../features/tasks/presentation/task_list_screen.dart';
 
 final GoRouter appRouter = GoRouter(
   routes: [
-    GoRoute(
-      path: '/',
-      builder: (context, state) => const TaskListScreen(),
-    ),
-    GoRoute(
-      path: '/new',
-      builder: (context, state) => const TaskFormScreen(),
-    ),
+    GoRoute(path: '/', builder: (context, state) => const TaskListScreen()),
+    GoRoute(path: '/new', builder: (context, state) => const TaskFormScreen()),
     GoRoute(
       path: '/task/:id',
       builder: (context, state) {

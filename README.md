@@ -1,20 +1,6 @@
 # taskflow
 
-A new Flutter project.
-
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Aplicación Flutter para organizar tareas académicas.
 
 ## Alcance de TaskFlow
 
@@ -40,7 +26,7 @@ userId (entero que identifica al usuario de prueba).
 
 ### Pantallas previstas
 Lista: tarjetas de tareas y acción para crear.
-Detalle: información completa y futuras acciones de editar o eliminar.
+Detalle: información completa y acciones de editar o eliminar.
 Formulario: campos de título, descripción y prioridad.
 
 ### Requisitos no funcionales
@@ -54,18 +40,47 @@ POST /tasks       crear tarea
 PATCH /tasks/:id  actualizar tarea
 DELETE /tasks/:id eliminar tarea
 
-La API concreta se elegirá después. Estas rutas son requisitos, no
-direcciones de un servidor ya conectado.
+La API concreta se eligió después (JSONPlaceholder). Estas rutas eran
+requisitos iniciales.
 
 ## API de tareas
 
-- URL exacta: `https://jsonplaceholder.typicode.com/todos?userId=2`
+- URL exacta: `https://jsonplaceholder.typicode.com/todos?userId=1`
 - Método: GET
-- Parámetro `userId`: filtra las tareas de un usuario (valor elegido: 2).
+- Parámetro `userId`: filtra las tareas de un usuario (valor elegido: 1).
 - Campos que llegan de la API: `userId`, `id`, `title` y `completed`
   (en el modelo `completed` se guarda como `isCompleted`).
-- Valores que TaskFlow completa por defecto: `description` ("Sin descripción (API)")
-  y `priority` ("Sin prioridad (A
-  PI)"), porque la API no los entrega.
+- Valores que TaskFlow completa por defecto: `description`
+  ("Sin descripción (API)") y `priority` ("Sin prioridad (API)"),
+  porque la API no los entrega.
 - Marcar una tarea como completada o pendiente es un cambio local en memoria:
   JSONPlaceholder no guarda cambios y, al reiniciar la app, vuelve al valor remoto.
+
+## Estados de la lista de tareas
+
+La pantalla de tareas distingue cuatro estados: carga, éxito, vacío y error.
+
+- **Carga:** se muestra un indicador de progreso mientras llega la respuesta.
+- **Éxito:** con internet, la API devuelve las tareas y se dibuja una tarjeta por cada una.
+- **Vacío:** se cambió temporalmente `userId` a `999` en `TaskApiService`; la API
+  responde una lista vacía y aparece "Todavía no hay tareas para mostrar" con el
+  botón Actualizar. Después se restauró `userId = 1`.
+- **Error:** se desactivó internet y se pulsó Actualizar; aparece
+  "No se pudieron cargar las tareas." con el botón Reintentar. Al reactivar
+  internet y pulsar Reintentar, la lista vuelve sin reiniciar la app.
+
+## Formulario de tareas
+
+La pantalla "Nueva tarea" valida el título (obligatorio, mínimo 3 caracteres),
+permite escribir una descripción, elegir la prioridad (Alta, Media o Baja) y
+una fecha límite opcional con `showDatePicker`. Cancelar vuelve a la lista sin
+mensaje.
+
+## CRUD con JSONPlaceholder (sesión 10)
+
+TaskFlow implementa POST (crear), PATCH (editar título) y DELETE (eliminar).
+JSONPlaceholder solo SIMULA las escrituras: responde como si guardara, pero no
+persiste nada. Al actualizar la lista o reiniciar la app, vuelven los datos
+originales. Las tareas creadas reciben el id 201 de la API y no existen
+realmente en el servidor, por lo que editarlas o eliminarlas en la API puede
+devolver error.

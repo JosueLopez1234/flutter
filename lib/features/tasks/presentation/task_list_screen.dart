@@ -3,7 +3,6 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import 'task_form_screen.dart';
-
 import 'tasks_view_model.dart';
 
 class TaskListScreen extends StatelessWidget {
@@ -26,18 +25,33 @@ class TaskListScreen extends StatelessWidget {
           ),
         ],
       ),
+      body: _buildBody(context, viewModel),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () async {
           final draft = await context.push<TaskDraft>('/new');
           if (!context.mounted || draft == null) return;
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Formulario válido: ${draft.title}')),
-          );
+
+          try {
+            await context.read<TasksViewModel>().createTask(
+              draft.title,
+              draft.description,
+              draft.priority,
+            );
+            if (context.mounted) {
+              ScaffoldMessenger.of(context)
+                  .showSnackBar(const SnackBar(content: Text('Tarea creada')));
+            }
+          } catch (_) {
+            if (context.mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('No se pudo crear la tarea')),
+              );
+            }
+          }
         },
         icon: const Icon(Icons.add),
         label: const Text('Nueva tarea'),
       ),
-      body: _buildBody(context, viewModel),
     );
   }
 
